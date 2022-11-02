@@ -1,0 +1,28 @@
+{
+  "name": "vue-project",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173"
+  },
+  "dependencies": {
+    "@ungap/structured-clone": "^1.0.1",
+    "@vueuse/core": "^9.4.0",
+    "approx-string-match": "^2.0.0",
+    "axios": "^1.1.3",
+    "classnames": "^2.3.2",
+    "jquery": "^3.6.1",
+    "node-sass": "^7.0.3",
+    "uuid": "^9.0.0",
+    "vue": "^2.7.7",
+    "vue-axios": "^3.5.1",
+    "vue-router": "^3.5.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-legacy": "^2.0.0",
+    "@vitejs/plugin-vue2": "^1.1.2",
+    "terser": "^5.14.2",
+    "vite": "^3.0.2"
+  }
+}
