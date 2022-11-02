@@ -6,12 +6,20 @@ export const getBackend = () => {
     return global.value.backend;
 }
 
+export const useAnnotations = () => {
+    return {
+        annotations: global.value.annotations
+    }
+}
+
 /**
  * Use note
  *
  * @returns {{note: *}}
  */
 export const useNote = () => {
+    const { annotations } = useAnnotations()
+    global.value.note.annotations = annotations;
     return {
         note: global.value.note,
     }
@@ -25,11 +33,12 @@ export const useNote = () => {
 export const useCreateAnnotation = () => {
     const createAnnotation = (annotation) => {
         const { note } = useNote();
+        const { annotations } = useAnnotations();
 
         const newAnnotation = Object.assign({id: generateID()}, annotation);
 
         // TODO: refactor
-        note.annotations.push(newAnnotation)
+        annotations.push(newAnnotation)
 
         return cloneDeep(newAnnotation);
     };
@@ -47,8 +56,7 @@ export const useCreateAnnotation = () => {
  */
 export const useGetAnnotations = () => {
     const getAnnotations = () => {
-        const { note } = useNote();
-        return cloneDeep(note.annotations);
+        return global.value.annotations;
     };
 
     return {
@@ -65,11 +73,12 @@ export const useGetAnnotations = () => {
 export const useDeleteAnnotation = () => {
     const deleteAnnotation = (annotationId) => {
         const { note } = useNote();
-        const idx = (note.annotations || []).findIndex((a) => a.id === annotationId);
+        const { annotations } = useAnnotations();
+        const idx = (annotations || []).findIndex((a) => a.id === annotationId);
         if (idx < 0) {
             return;
         }
-        return cloneDeep(note.annotations.splice(idx, 1)[0]);
+        return cloneDeep(annotations.splice(idx, 1)[0]);
     };
 
     return {
@@ -84,15 +93,16 @@ export const useDeleteAnnotation = () => {
 export const useComment = () => {
     const updateComment = (comment) => {
         const { note } = useNote();
+        const { annotations } = useAnnotations();
 
         const newComment = Object.assign({id: generateID()}, comment, {replies: []});
 
-        const annotationIdx = (note.annotations || []).findIndex((a) => a.id === comment.annotation_id);
+        const annotationIdx = (annotations || []).findIndex((a) => a.id === comment.annotation_id);
         if (annotationIdx < 0) {
             return;
         }
 
-        const annotation = note.annotations[annotationIdx]
+        const annotation = annotations[annotationIdx]
 
         if (!newComment.parent_id) {
             annotation.comment = newComment;
@@ -100,6 +110,12 @@ export const useComment = () => {
             const replies = (annotation.comment && annotation.comment.replies) || [];
             replies.push(newComment);
         }
+
+        annotations.splice(annotationIdx, 1)
+        annotations.splice(annotationIdx, 0, annotation);
+
+        // console.log(note.annotations);
+        // console.log(global.value.note)
 
         return cloneDeep(newComment);
     }

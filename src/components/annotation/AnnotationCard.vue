@@ -13,7 +13,7 @@
     <!-- comments container -->
     <div class="comments-container">
       <!--  comment view -->
-      <div class="comment" v-if="!isEditComment && hasComment">
+      <div class="comment" v-if="!isEditComment && hasComment()">
         {{ form.content || annotation.comment.content }}
       </div>
       <!--  comment edit -->
@@ -32,14 +32,14 @@
       </div>
       <div class="operations" v-else>
         <button class="oper-btn" @click="editComment">Edit</button>
-        <button class="oper-btn" @click="editReply" v-if="hasComment">Reply</button>
+        <button class="oper-btn" @click="editReply" v-if="hasComment()">Reply</button>
         <button class="oper-btn danger" @click="deleteAnnotation">
           Delete
         </button>
       </div>
 
       <!-- replies -->
-      <template v-if="hasComment">
+      <template v-if="hasComment()">
         <div class="replies-container" v-if="showReplies">
           <button @click="setRepliesVisible(false)" class="oper-btn primary">Hide Replies ({{ repliesCount }})</button>
           <textarea class="comment-textarea reply" v-model="replyForm.content" v-if="isEditReply"></textarea>
@@ -49,7 +49,7 @@
             </button>
             <button class="oper-btn" @click="cancelPost(optionsType.reply)">Cancel</button>
           </div>
-          <div class="replies" v-if="hasComment" v-for="reply in replies">
+          <div class="replies" v-if="hasComment()" v-for="reply in replies">
             <div>{{ reply.content }}</div>
           </div>
         </div>
@@ -128,16 +128,12 @@ export default {
     };
   },
   mounted() {
-    if (!this.hasComment) {
-      //   this.switchMode(MODE.EDIT);
-    }
-
     this.initViewContent();
   },
   computed: {
-    hasComment() {
-      return !!this.annotation.comment;
-    },
+    // hasComment() {
+    //   return !!this.annotation.comment;
+    // },
     isEditComment() {
       return this.options[optionsType.comment].mode === MODE.EDIT;
     },
@@ -152,12 +148,15 @@ export default {
     }
   },
   methods: {
+    hasComment() {
+      return !!this.annotation.comment;
+    },
     initViewContent(type) {
       const defaultHandler = () => {};
 
       const handlerMap = {
         [optionsType.comment]: () => {
-          this.form.content = this.hasComment
+          this.form.content = this.hasComment()
               ? this.annotation.comment.content
               : "";
         },
@@ -186,6 +185,7 @@ export default {
 
       // update comment
       const comment = await updateComment(toFormData());
+      console.log('comment:', comment);
 
       // map result
       this.annotation.comment = commentMapper(comment);
@@ -205,6 +205,7 @@ export default {
 
       // update comment
       const reply = await updateComment(toFormData());
+      console.log('reply:', reply);
 
       // map result
       this.annotation.comment.replies.push(commentMapper(reply))
@@ -219,7 +220,7 @@ export default {
     },
     editComment() {
       this.switchMode(MODE.EDIT);
-      if (this.hasComment) {
+      if (this.hasComment()) {
         this.form.content = this.annotation.comment.content;
       }
     },

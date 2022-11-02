@@ -31,6 +31,7 @@ const _global = {
         `,
         annotations: [],
     },
+    annotations: [],
     backend: new LocalStorage()
 
 };
