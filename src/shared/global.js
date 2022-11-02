@@ -85,16 +85,23 @@ export const useComment = () => {
     const updateComment = (comment) => {
         const { note } = useNote();
 
-        const newComment = Object.assign({id: generateID()}, comment);
+        const newComment = Object.assign({id: generateID()}, comment, {replies: []});
 
-        if (!comment.parent_id) {
-            note.comment = comment;
-        } else {
-            const replies = (note.comment && note.comment.replies) || [];
-            replies.push(note.comment.replies.push(comment));
+        const annotationIdx = (note.annotations || []).findIndex((a) => a.id === comment.annotation_id);
+        if (annotationIdx < 0) {
+            return;
         }
 
-        return cloneDeep(comment);
+        const annotation = note.annotations[annotationIdx]
+
+        if (!newComment.parent_id) {
+            annotation.comment = newComment;
+        } else {
+            const replies = (annotation.comment && annotation.comment.replies) || [];
+            replies.push(newComment);
+        }
+
+        return cloneDeep(newComment);
     }
 
     return {

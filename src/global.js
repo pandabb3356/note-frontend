@@ -5,7 +5,7 @@ import {LocalHost} from "./api/backend/local";
 import {LocalStorage} from "./api/backend/storage";
 
 
-const global = useStorage("floor-guide", null, undefined,{
+const global = useStorage("note-test", null, undefined,{
     serializer: {
         read: (v) => (v ? JSON.parse(v) : ""),
         write: (v) => JSON.stringify(v),
