@@ -50,6 +50,11 @@ export default {
     buildNoteSelectorId() {
       return `note-content-${this.note.id}`;
     },
+    triggerClickedEvent(annotation) {
+      return () => {
+        this.triggerAnnotationEvent(this.annotationEvent.annotationClicked, {annotationId: annotation.id})
+      }
+    },
     initAnnotations() {
       this.note.annotations.forEach((annotation) => {
         try {
@@ -57,7 +62,7 @@ export default {
 
           const annotationData = annotationMapper(annotation.target, annotation);
 
-          htmlAnchor(annotationData, this.noteBody());
+          htmlAnchor(annotationData, this.noteBody(), this.triggerClickedEvent(annotationData));
 
         } catch (e) {
           console.log(`initAnnotations Error: ${e}`);
@@ -160,7 +165,7 @@ export default {
 
       const annotationData = annotationMapper(target, annotation);
 
-      htmlAnchor(annotationData, this.noteBody());
+      htmlAnchor(annotationData, this.noteBody(), this.triggerClickedEvent(annotationData));
 
       this.clearSelectionRanges();
     },
@@ -275,7 +280,7 @@ export default {
 .hypothesis-underline {
   text-decoration: underline;
   cursor: pointer;
-  text-decoration-color: rgba(227, 111, 14, 0.6);
+  text-decoration-color: rgba(227, 111, 14, 0.8);
 }
 
 h1.note-title {

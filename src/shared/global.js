@@ -114,9 +114,6 @@ export const useComment = () => {
         annotations.splice(annotationIdx, 1)
         annotations.splice(annotationIdx, 0, annotation);
 
-        // console.log(note.annotations);
-        // console.log(global.value.note)
-
         return cloneDeep(newComment);
     }
 

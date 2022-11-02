@@ -8,7 +8,7 @@
     </div>
     <!-- annotation text -->
     <div class="annotation-text">
-      {{ annotation.content || "" }}
+      <div v-html="annotation.displayContent"></div>
     </div>
     <!-- comments container -->
     <div class="comments-container">
@@ -41,7 +41,7 @@
       <!-- replies -->
       <template v-if="hasComment()">
         <div class="replies-container" v-if="showReplies">
-          <button @click="setRepliesVisible(false)" class="oper-btn primary">Hide Replies ({{ repliesCount }})</button>
+          <button @click="setRepliesVisible(false)" class="oper-btn primary">Hide Replies ({{ repliesCount() }})</button>
           <textarea class="comment-textarea reply" v-model="replyForm.content" v-if="isEditReply"></textarea>
           <div class="operations" v-if="isEditReply">
             <button class="oper-btn" :disabled="!replyForm.content" @click="addReply">
@@ -54,7 +54,7 @@
           </div>
         </div>
         <div class="replies-container" v-else-if="!showReplies">
-          <button @click="setRepliesVisible(true)" class="oper-btn primary">Show Replies ({{ repliesCount }})</button>
+          <button @click="setRepliesVisible(true)" class="oper-btn primary">Show Replies ({{ repliesCount() }})</button>
         </div>
       </template>
 
@@ -131,9 +131,6 @@ export default {
     this.initViewContent();
   },
   computed: {
-    // hasComment() {
-    //   return !!this.annotation.comment;
-    // },
     isEditComment() {
       return this.options[optionsType.comment].mode === MODE.EDIT;
     },
@@ -143,11 +140,11 @@ export default {
     replies() {
       return (this.annotation.comment && this.annotation.comment.replies) || [];
     },
-    repliesCount() {
-      return this.replies.length;
-    }
   },
   methods: {
+    repliesCount() {
+      return this.replies.length;
+    },
     hasComment() {
       return !!this.annotation.comment;
     },
@@ -185,7 +182,6 @@ export default {
 
       // update comment
       const comment = await updateComment(toFormData());
-      console.log('comment:', comment);
 
       // map result
       this.annotation.comment = commentMapper(comment);
@@ -205,7 +201,6 @@ export default {
 
       // update comment
       const reply = await updateComment(toFormData());
-      console.log('reply:', reply);
 
       // map result
       this.annotation.comment.replies.push(commentMapper(reply))
@@ -333,5 +328,10 @@ export default {
 
 .replies-container .replies {
   padding: 20px 0;
+}
+
+.annotation-content-highlight {
+  background-color: yellow;
+  color: black;
 }
 </style>

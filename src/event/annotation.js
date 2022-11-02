@@ -7,6 +7,7 @@ export const AnnotationEventMixin = {
                 deleted: `${ANNOTATION_NAMESPACE}Deleted`,
                 updated: `${ANNOTATION_NAMESPACE}Updated`,
                 created: `${ANNOTATION_NAMESPACE}Created`,
+                annotationClicked: `${ANNOTATION_NAMESPACE}AnnotationClicked`,
             }
         }
     },

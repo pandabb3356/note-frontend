@@ -43,7 +43,7 @@ export const resolveAnchor = (anchor) => {
 /**
  * Anchor to element
  */
-export const anchor = async (annotation, element) => {
+export const anchor = async (annotation, element, clickEvent = null) => {
   const getCssName = () => {
     const cssNameMap = {
       [ADDER_TYPE.HIGHLIGHT]: "hypothesis-highlight",
@@ -97,12 +97,7 @@ export const anchor = async (annotation, element) => {
     const highlights = highlightRange(
         range,
         classnames(getCssName(), anchor.annotation?.$cluster),
-        () => {
-          const card = document.getElementById(`annotation-card-${annotation.id}`);
-          if (card) {
-            card.scrollIntoView({ behavior: "smooth" });
-          }
-        }
+        clickEvent
     );
     highlights.forEach((h) => {
       h._annotation = anchor.annotation;
